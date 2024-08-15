@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tik Tak Toe</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-gap: 10px;
+            margin: 0 auto;
+            width: 300px;
+        }
+        .cell {
+            width: 100px;
+            height: 100px;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .cell:hover {
+            background-color: #e0e0e0;
+        }
+        .winner {
+            background-color: #ffd700;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tik Tak Toe</h1>
+    <div class="board"></div>
+    <script>
+        const board = document.querySelector('.board');
+        let cells = [];
+        let currentPlayer = 'X';
+        let gameOver = false;
+        let winner;
+
+        function createBoard() {
+            for (let i = 0; i < 9; i++) {
+                const cell = document.createElement('div');
+                cell.classList.add('cell');
+                cell.addEventListener('click', handleClick);
+                cells.push(cell);
+                board.appendChild(cell);
+            }
+        }
+
+        function handleClick(e) {
+            if (!gameOver) {
+                const cell = e.target;
+                if (!cell.textContent) {
+                    cell.textContent = currentPlayer;
+                    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                    checkWinner();
+                }
+            }
+        }
+
+        function checkWinner() {
+            const lines = [
+                [0, 1, 2],
+                [3, 4, 5],
+                [6, 7, 8],
+                [0, 3, 6],
+                [1, 4, 7],
+                [2, 5, 8],
+                [0, 4, 8],
+                [2, 4, 6],
+            ];
+
+            lines.forEach(line => {
+                const [a, b, c] = line;
+                const cellA = cells[a].textContent;
+                const cellB = cells[b].textContent;
+                const cellC = cells[c].textContent;
+
+                if (cellA && cellA === cellB && cellA === cellC) {
+                    gameOver = true;
+                    winner = currentPlayer;
+                    cells[a].classList.add('winner');
+                    cells[b].classList.add('winner');
+                    cells[c].classList.add('winner');
+                }
+            });
+
+            if (!gameOver) {
+                const emptyCells = cells.filter(cell => !cell.textContent);
+                if (emptyCells.length === 0) {
+                    gameOver = true;
+                    winner = 'Tie';
+                }
+            }
+        }
+
+        createBoard();
+    </script>
+</body>
+</html>
